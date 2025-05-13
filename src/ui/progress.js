@@ -2,4 +2,10 @@
 // - Render progress bars for each file
 // - Update status messages
 
-// TODO: Implement progress bar rendering and updates
+export function setProgress(element, value) {
+	element.value = value;
+}
+
+export function setStatus(element, message) {
+	element.textContent = message;
+}

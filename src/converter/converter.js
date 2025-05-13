@@ -9,6 +9,8 @@
 // - Async/await and modern ES6+ syntax
 
 import heic2any from 'heic2any';
+import JSZip from 'jszip';
+import { saveAs } from 'file-saver';
 
 export class BatchConverter {
 	/**
@@ -38,28 +40,64 @@ export class BatchConverter {
 	}
 
 	/**
-	 * Process all files in queue using Web Workers
-	 * @returns {Promise<void>}
-	 */
-	async processAll() {
-		// TODO: Implement parallel processing
-	}
-
-	/**
-	 * Handle individual file conversion
-	 * @param {File} file
+	 * Process all files in the queue using Web Workers
 	 * @param {Object} options
-	 * @returns {Promise<File>}
+	 * @param {string} options.format - Output format
+	 * @param {number} options.quality - Output quality
+	 * @param {Function} onProgress - Progress callback
 	 */
-	async convertFile(file, options) {
-		// TODO: Handle single file conversion
+	async processAll(options = {}, onProgress) {
+		const results = [];
+		let completed = 0;
+		for (const [i, file] of this.queue.entries()) {
+			const id = `${file.name}-${i}`;
+			const worker = new Worker('/src/converter/worker.js', { type: 'module' });
+			results.push(new Promise((resolve) => {
+				worker.onmessage = (e) => {
+					if (e.data.status === 'success') {
+						this.results.push(e.data.result);
+						if (onProgress) onProgress(id, 100);
+						resolve(e.data.result);
+					} else {
+						this.errors.push({ id, error: e.data.error });
+						if (onProgress) onProgress(id, 0);
+						resolve(null);
+					}
+					worker.terminate();
+				};
+				worker.postMessage({ file, options, id });
+			}));
+		}
+		await Promise.all(results);
 	}
 
 	/**
-	 * Download all converted files as ZIP
-	 * @returns {Promise<void>}
+	 * Convert a single file (for direct use)
+	 */
+	async convertFile(file, options = {}) {
+		return new Promise((resolve, reject) => {
+			const worker = new Worker('/src/converter/worker.js', { type: 'module' });
+			worker.onmessage = (e) => {
+				if (e.data.status === 'success') {
+					resolve(e.data.result);
+				} else {
+					reject(new Error(e.data.error));
+				}
+				worker.terminate();
+			};
+			worker.postMessage({ file, options, id: file.name });
+		});
+	}
+
+	/**
+	 * Download all converted files as a ZIP
 	 */
 	async downloadAsZip() {
-		// TODO: Implement ZIP creation and download
+		const zip = new JSZip();
+		this.results.forEach((blob, i) => {
+			zip.file(`converted-${i + 1}.jpg`, blob);
+		});
+		const content = await zip.generateAsync({ type: 'blob' });
+		saveAs(content, 'converted-files.zip');
 	}
 }

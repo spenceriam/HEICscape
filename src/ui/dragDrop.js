@@ -5,5 +5,21 @@
 // - Provides error messages for invalid files
 
 export function initDragDrop(element, onFilesSelected) {
-  // TODO: Implement drag and drop event handlers
+	function preventDefaults(e) {
+		e.preventDefault();
+		e.stopPropagation();
+	}
+
+	element.addEventListener('dragover', preventDefaults);
+	element.addEventListener('dragenter', preventDefaults);
+	element.addEventListener('dragleave', preventDefaults);
+	element.addEventListener('drop', (e) => {
+		preventDefaults(e);
+		const files = Array.from(e.dataTransfer.files).filter(f => f.type === 'image/heic');
+		if (files.length === 0) {
+			alert('Please drop valid HEIC files.');
+			return;
+		}
+		onFilesSelected(files);
+	});
 }

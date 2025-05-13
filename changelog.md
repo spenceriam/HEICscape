@@ -11,6 +11,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 - Tailwind CSS base file
 - File structure for src/converter, src/ui, src/styles, public
 - Initial implementation of BatchConverter class with intent comments and validation logic
+- Web Worker for parallel HEIC conversion and progress reporting
+- UI components: drag-drop, file list, progress bar, error messages
+- Download as ZIP functionality
+- Support for JPEG, PNG, WebP output formats
 
 ## [0.1.0] - 2025-05-13
 ### Added

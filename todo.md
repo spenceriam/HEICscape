@@ -13,10 +13,10 @@
 
 ## 2. Core Features
 - [x] BatchConverter class for multiple HEIC file conversions
-- [ ] Web Worker for parallel processing and progress reporting
-- [ ] UI: drag-drop, file list, progress, error messages
-- [ ] Download as ZIP
-- [ ] Support for JPEG, PNG, WebP output
+- [x] Web Worker for parallel processing and progress reporting
+- [x] UI: drag-drop, file list, progress, error messages
+- [x] Download as ZIP
+- [x] Support for JPEG, PNG, WebP output
 
 ## 3. Error Handling & Recovery
 - [ ] Graceful error handling in main thread and worker
