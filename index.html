@@ -3,14 +3,58 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>HEICscape - Free Online HEIC to JPG/PNG</title>
-  <link rel="manifest" href="/public/manifest.json">
+  <title>HEICscape - HEIC Converter</title>
+  <link rel="manifest" href="/manifest.json">
   <link rel="stylesheet" href="./src/styles/main.css">
-  <!-- Meta tags and PWA manifest can be extended -->
+  <link rel="stylesheet" href="./src/styles/tailwind-override.css">
 </head>
-<body class="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 min-h-screen">
-  <div id="app">
-    <!-- Main converter UI will be rendered here -->
+<body class="bg-gray-100 min-h-screen text-gray-800 font-sans"> 
+  <div id="app" class="max-w-4xl mx-auto">
+    <div class="p-6 md:p-8"> 
+      <div class="text-center mb-8"> 
+        <h1 class="text-4xl font-bold mb-2 text-blue-500">HEICscape</h1>
+        <p class="text-gray-600">Convert your HEIC files to standard formats with ease.</p>
+      </div>
+
+      <div class="drop-zone cursor-pointer mb-6 bg-white shadow-md"> 
+        <span class="block text-lg font-medium mb-2">Drag & drop files here</span>
+        <span class="text-sm text-gray-500">or click to browse</span>
+        <input id="file-input" type="file" accept=".heic" multiple class="hidden" />
+      </div>
+
+      <div id="file-list" class="mb-6 space-y-2 max-h-60 overflow-y-auto"></div>
+
+      <div class="bg-white p-6 rounded-lg shadow-md mb-6"> 
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label for="output-format" class="block text-sm font-medium mb-2">Output Format</label>
+            <select id="output-format" class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+            <option value="jpeg">JPEG</option>
+            <option value="png">PNG</option>
+            <option value="webp">WebP</option>
+          </select>
+        </div>
+        <div>
+          <label for="quality" class="block text-sm font-medium mb-2">Quality (<span id="quality-value">95</span>%)</label>
+          <input id="quality" type="range" min="50" max="100" value="95" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer" />
+        </div>
+      </div>
+
+      <div id="progress" class="mb-6 h-2 bg-gray-200 rounded-full overflow-hidden hidden">
+        <div class="h-full bg-blue-500 transition-all duration-300"></div>
+      </div>
+
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <button id="convert-btn" disabled class="px-6 py-3 bg-blue-500 text-white rounded-lg shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">Convert Files</button>
+        <button id="download-btn" disabled class="px-6 py-3 bg-gray-700 text-white rounded-lg shadow-md hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">Download ZIP</button>
+      </div>
+
+      <div id="error-message" role="alert" class="mt-4 p-4 bg-red-100 text-red-700 rounded-lg hidden"></div>
+    </div>
+
+    <footer class="mt-12 p-4 text-center text-gray-500 text-sm">
+      <span>&copy; 2025 HEICscape. All rights reserved.</span>
+    </footer>
   </div>
   <script type="module" src="./src/main.js"></script>
 </body>

@@ -304,6 +304,74 @@ export class FileListManager {
 }
 ```
 
+## 🚨 Important: Tailwind CSS v4 Compatibility
+
+### Tailwind CSS v4 Configuration Issues
+When using Tailwind CSS v4 (beta/alpha) in this project, we encountered specific compatibility issues that required special handling:
+
+```bash
+# Error encountered
+Error: Cannot apply unknown utility class: border-gray-300
+```
+
+### Solution Implemented
+We resolved this with the following approach:
+
+1. **PostCSS Configuration**: Use `@tailwindcss/postcss` instead of `tailwindcss` directly
+   ```javascript
+   // postcss.config.js
+   export default {
+     plugins: {
+       '@tailwindcss/postcss': {}, // NOT tailwindcss: {}
+       autoprefixer: {},
+     },
+   };
+   ```
+
+2. **Tailwind Configuration**: Disable problematic color utilities
+   ```javascript
+   // tailwind.config.js
+   export default {
+     content: [
+       './index.html',
+       './src/**/*.{js,ts,jsx,tsx,css}',
+     ],
+     theme: {
+       extend: {}, // Keep this minimal
+     },
+     // Disable color utilities causing issues
+     corePlugins: {
+       textColor: false,
+       backgroundColor: false,
+       borderColor: false,
+       ringColor: false,
+       divideColor: false
+     },
+     plugins: [],
+   }
+   ```
+
+3. **CSS Fallbacks**: Add a tailwind-override.css with standard CSS implementations
+   ```html
+   <!-- In index.html -->
+   <link rel="stylesheet" href="./src/styles/main.css">
+   <link rel="stylesheet" href="./src/styles/tailwind-override.css">
+   ```
+
+4. **Avoid @apply**: Keep main.css simple and avoid @apply directives
+   ```css
+   /* src/styles/main.css */
+   @tailwind base;
+   @tailwind components;
+   @tailwind utilities;
+
+   /* Using minimal Tailwind features to avoid errors */
+   /* The majority of styling is now in tailwind-override.css */
+   ```
+
+### 🔄 Do Not Change Without Testing
+**IMPORTANT**: If upgrading Tailwind CSS or modifying the configuration, thoroughly test the styling as these workarounds may need adjusting. Do not remove the tailwind-override.css file or change the configuration without verifying everything works.
+
 ### Phase 6: Main Application Entry
 
 **File: `src/main.js`**
