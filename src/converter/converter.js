@@ -11,6 +11,7 @@
 import heic2any from 'heic2any';
 import JSZip from 'jszip';
 import { saveAs } from 'file-saver';
+import { PerformanceMonitor } from '../utils/performance.js';
 
 export class BatchConverter {
 	/**
@@ -49,26 +50,35 @@ export class BatchConverter {
 	async processAll(options = {}, onProgress) {
 		const results = [];
 		let completed = 0;
+		const perf = new PerformanceMonitor();
 		for (const [i, file] of this.queue.entries()) {
 			const id = `${file.name}-${i}`;
 			const worker = new Worker('/src/converter/worker.js', { type: 'module' });
+			const start = performance.now();
 			results.push(new Promise((resolve) => {
+				let retries = 0;
 				worker.onmessage = (e) => {
 					if (e.data.status === 'success') {
 						this.results.push(e.data.result);
-						if (onProgress) onProgress(id, 100);
+						perf.record(id, performance.now() - start);
+						if (onProgress) onProgress(id, 100, 'Complete');
 						resolve(e.data.result);
+					} else if (e.data.status === 'retry' && retries < 2) {
+						retries++;
+						worker.postMessage({ file, options, id, retry: retries });
+						if (onProgress) onProgress(id, 0, 'Retrying...');
 					} else {
 						this.errors.push({ id, error: e.data.error });
-						if (onProgress) onProgress(id, 0);
+						if (onProgress) onProgress(id, 0, e.data.error || 'Unknown error');
 						resolve(null);
+						worker.terminate();
 					}
-					worker.terminate();
 				};
 				worker.postMessage({ file, options, id });
 			}));
 		}
 		await Promise.all(results);
+		perf.report();
 	}
 
 	/**

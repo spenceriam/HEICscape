@@ -15,6 +15,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 - UI components: drag-drop, file list, progress bar, error messages
 - Download as ZIP functionality
 - Support for JPEG, PNG, WebP output formats
+- Graceful error handling in main thread and worker
+- User-friendly error messages and retry logic for failed conversions
+- Performance monitoring: track conversion time, memory usage, worker utilization
+- Optimized for large batches (100+ files)
+- Tailwind CSS dark mode, responsive, and accessible styles
+- ARIA labels and keyboard navigation for accessibility
 
 ## [0.1.0] - 2025-05-13
 ### Added

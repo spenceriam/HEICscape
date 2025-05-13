@@ -13,12 +13,14 @@ export class FileListManager {
 	addFile(file, id) {
 		const item = document.createElement('div');
 		item.className = 'file-item flex items-center gap-2 p-2 border-b';
+		item.setAttribute('role', 'listitem');
+		item.setAttribute('aria-label', `File ${file.name}`);
 		item.innerHTML = `
 			<img src="" alt="thumb" class="w-8 h-8 bg-gray-200" />
 			<span>${file.name}</span>
 			<span class="text-xs text-gray-500">${(file.size/1024).toFixed(1)} KB</span>
-			<progress value="0" max="100"></progress>
-			<button class="remove-btn text-red-500 ml-auto">Remove</button>
+			<progress value="0" max="100" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"></progress>
+			<button class="remove-btn text-red-500 ml-auto" aria-label="Remove file">Remove</button>
 		`;
 		item.querySelector('.remove-btn').onclick = () => {
 			item.remove();
@@ -32,7 +34,10 @@ export class FileListManager {
 		const entry = this.files.get(id);
 		if (entry) {
 			const progressEl = entry.item.querySelector('progress');
-			if (progressEl) progressEl.value = progress;
+			if (progressEl) {
+				progressEl.value = progress;
+				progressEl.setAttribute('aria-valuenow', progress);
+			}
 		}
 	}
 
