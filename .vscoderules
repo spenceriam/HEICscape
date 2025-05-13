@@ -1,0 +1,52 @@
+# Project AI Coding Instructions
+
+## Project Context
+1. Review what's in #build.md and #todo.md to understand the project needs
+2. After each change, do a git commit and push for versioning
+3. Update #changelog.md and #todo.md after items are complete
+
+## Coding Standards
+- Indentation: [tabs/spaces] (exactly [number])
+- Naming conventions:
+  - Variables: camelCase
+  - Functions: camelCase
+  - Classes: PascalCase
+  - Constants: UPPER_SNAKE_CASE
+  - Files: kebab-case
+
+## Code Style Preferences
+- Use modern ES6+ syntax
+- Prefer functional programming patterns
+- Use async/await over promises
+- Destructure objects when possible
+- Write self-documenting code
+
+## Framework-Specific Rules
+- React: Use functional components with hooks
+- Testing: Use Jest for unit tests
+- State management: [Redux/Context/Zustand]
+- Styling: [CSS Modules/Styled Components/Tailwind]
+
+## Error Handling
+- Always use try-catch for async operations
+- Log errors with meaningful context
+- Provide user-friendly error messages
+- Never expose sensitive data in errors
+
+## Security Requirements
+- Validate all user inputs
+- Sanitize data before database operations
+- Use environment variables for secrets
+- Implement proper authentication/authorization
+
+## Documentation
+- Document complex logic with inline comments
+- Add JSDoc comments for public functions
+- Maintain up-to-date README files
+- Include usage examples for utilities
+
+## Dependencies
+- Prefer well-maintained packages
+- Check for security vulnerabilities
+- Keep dependencies up to date
+- Document why each dependency is needed
